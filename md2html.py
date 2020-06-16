@@ -10,7 +10,7 @@
 """Convert Markdown to HTML with this simple Python script.
 
 Usage:
-  md2html.py --src=<path> --dest=<path> [--quiet | --verbose]
+  md2html.py --src=<path> --dest=<name> [--quiet]
   md2html.py (-h | --help)
   md2html.py (-c | --credits)
   
@@ -18,14 +18,28 @@ Options:
   -h --help      Shows this help screen
   -c --credits   Shows credits, copyrights, and other licensing info
   --src=<path>   Path to the source Markdown file you want to convert to HTML
-  --dest=<path>  Destination HTML file path
-  --quiet        Silent conversion (cannot enable verbose at the same time)
-  --verbose      Print active conversion status (cannot enable quiet at the same time)
+  --dest=<name>  Destination HTML file name - to be located in the same directory
+  --quiet        Silent conversion (optional, default is verbose)
 
 """
 from docopt import docopt
 import os
+from os import path
 import sys
+
+verbose = True
+
+def convert(args, verbosity):
+    source = open(args['--src'], 'rt') # read the file
+    os.chdir(os.path.dirname(args['--src']))
+    dest = open(args['--dest'], 'a') # initialize destination file
+    if verbosity:
+        print("Destination file successfully created at: " + os.getcwd())
+        print("Beginning conversion process...")
+    
+    # convert!
+    
+    
 
 def display_credits():
     # display credits if user asks to
@@ -33,10 +47,19 @@ def display_credits():
     print('Written by Nitish Vijai <nitishv@umich.edu>')
     print('Licensed under Apache License 2.0')
     print('Copyright (c) 2020 Nitish Vijai.')
-    
 
 if __name__ == "__main__":
     args = docopt(__doc__, help=True)
+    verbose = not args['--quiet']
+
+    # check to make sure file exists
+    filesPresent = path.isfile(args['--src'])
+    if filesPresent != True:
+        print("Error: invalid source file path")
+        exit
+
+    convert(args, verbose)
+    
     if args['--credits'] == True:
         display_credits()
     
