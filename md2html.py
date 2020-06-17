@@ -30,6 +30,12 @@ import sys
 
 verbose = True
 
+"""
+TODO:
+1. Ship a working implementation
+2. Implement alt. syntax for h1/h2
+"""
+
 def convert(source, dest, args, verbosity):
     dest = open(args['--dest'], 'w')
     prevLine = ''
@@ -72,47 +78,22 @@ def convert(source, dest, args, verbosity):
             nested = 'h6'
             newLine = '<h6>' + content + '</h6>\n'
             dest.write(newLine)   
-        elif line.startswith('=='): # alt. syntax for level 1
-            content = prevLine
-            nested = 'h1'
-            newLine = '<h1>' + content + '</h1>\n'
-            lines = dest.readlines()
-            lines = lines[:-1]
-            dest.write(newLine)
-        elif line == '\n':
+        elif line == '\n': # blank lines
             continue
-        else:
-            newLine = '<p>' + line + '</p>\n'
+        elif line.startswith('') and (line.endswith('  \n') or line.endswith('<br>\n')): # paragraph n line break
             nested = 'p'
-            dest.write(newLine)
-
-        # ------------------------- Paragraphs (p) -------------------------
-        # ------------------------- Line Breaks (br) -------------------------
-        if line.endswith('  '):
             if nested is not None:
-                line.replace('  ', '<br>')
-                newLine = '<' + nested + '>' + line + '</' + nested + '>\n'
-                lines = dest.readlines()
-                lines = lines[:-1]
+                line.replace('  \n', '<br>\n')
+                newLine = '<p>' + line + '</p>\n'
                 dest.write(newLine)
-            else:
-                line.replace('  ', '<br>')
-                dest.write(line)
-        elif line.endswith('<br>'):
-            if nested is not None:
-                newLine = '<' + nested + '>' + line + '</' + nested + '>\n'
-                lines = dest.readlines()
-                lines = lines[:-1]
-                dest.write(newLine)
-            else:
-                dest.write(line)
             
 
         if verbosity:
             print("Source: " + line)
-            print("Destination: " + newLine, end='\r\r')
+            print("Destination: " + newLine)
 
         prevLine = line
+        
 
     dest.write('</body>\n</html>')
 

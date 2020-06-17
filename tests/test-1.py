@@ -16,6 +16,7 @@ class HeadingsTestCase(unittest.TestCase):
 
         identical = filecmp.cmp('test-1a.html', 'model-1a.html')
         self.assertEqual(identical, True)
+    
 
 if __name__ == '__main__':
     unittest.main()
