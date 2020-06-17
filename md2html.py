@@ -34,6 +34,10 @@ def convert(source, dest, args, verbosity):
     dest = open(args['--dest'], 'w')
     prevLine = ''
     nested = ''
+
+    # write HTML header markup
+    dest.write('<!DOCTYPE html>\n<html>\n<head>\n<title>Converted with Md2Html</title>\n</head>\n<body>\n')
+
     for line in source:
         newLine = ''
 
@@ -75,14 +79,14 @@ def convert(source, dest, args, verbosity):
             lines = dest.readlines()
             lines = lines[:-1]
             dest.write(newLine)
-        # implement alt. syntax for level 2 later
-
-        # ------------------------- Paragraphs (p) -------------------------
-        if re.match('^[a-zA-Z]+', line) is not None:
+        elif line == '\n':
+            continue
+        else:
             newLine = '<p>' + line + '</p>\n'
             nested = 'p'
             dest.write(newLine)
-        
+
+        # ------------------------- Paragraphs (p) -------------------------
         # ------------------------- Line Breaks (br) -------------------------
         if line.endswith('  '):
             if nested is not None:
@@ -104,15 +108,13 @@ def convert(source, dest, args, verbosity):
                 dest.write(line)
             
 
-
-        if line == '': # blank line
-            dest.write('\n\n')  
-
         if verbosity:
             print("Source: " + line)
-            print("Destination: " + newLine)
+            print("Destination: " + newLine, end='\r\r')
 
         prevLine = line
+
+    dest.write('</body>\n</html>')
 
 
 def create_files(args, verbosity):
