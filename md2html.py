@@ -29,16 +29,54 @@ import sys
 
 verbose = True
 
-def convert(args, verbosity):
+def convert(source, dest, args, verbosity):
+    dest = open(args['--dest'], 'w')
+    for line in source:
+        newLine = ''
+        if line.startswith('# '): # heading level 1
+            content = line[2:len(line) - 1]
+            newLine = '<h1>' + content + '</h1>\n'
+            dest.write(newLine)
+        elif line.startswith('## '): # heading level 2
+            content = line[3:len(line) - 1]
+            newLine = '<h2>' + content + '</h2>\n'
+            dest.write(newLine)
+        elif line.startswith('### '): # heading level 3
+            content = line[4:len(line) - 1]
+            newLine = '<h3>' + content + '</h3>\n'
+            dest.write(newLine)
+        elif line.startswith('#### '): # heading level 4
+            content = line[5:len(line) - 1]
+            newLine = '<h4>' + content + '</h4>\n'
+            dest.write(newLine) 
+        elif line.startswith('##### '): # heading level 5
+            content = line[6:len(line) - 1]
+            newLine = '<h5>' + content + '</h5>\n'
+            dest.write(newLine)   
+        elif line.startswith('###### '): # heading level 6
+            content = line[7:len(line) - 1]
+            newLine = '<h6>' + content + '</h6>\n'
+            dest.write(newLine)      
+
+        if line == '': # blank line
+            dest.write('\n\n')  
+
+        if verbosity:
+            print("Source: " + line)
+            print("Destination: " + newLine)
+
+
+def create_files(args, verbosity):
     source = open(args['--src'], 'rt') # read the file
     os.chdir(os.path.dirname(args['--src']))
     dest = open(args['--dest'], 'a') # initialize destination file
+    dest.close()
     if verbosity:
         print("Destination file successfully created at: " + os.getcwd())
         print("Beginning conversion process...")
     
     # convert!
-    
+    convert(source, dest, args, verbosity)
     
 
 def display_credits():
@@ -58,7 +96,7 @@ if __name__ == "__main__":
         print("Error: invalid source file path")
         exit
 
-    convert(args, verbose)
+    create_files(args, verbose)
     
     if args['--credits'] == True:
         display_credits()
