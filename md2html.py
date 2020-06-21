@@ -46,53 +46,8 @@ def convert(source, dest, args, verbosity):
 
     for line in source:
         newLine = ''
-
-        # ------------------------- Headings (h1 - h6) -------------------------
-        if line.startswith('# '): # heading level 1
-            content = line[2:len(line) - 1]
-            nested = 'h1'
-            newLine = '<h1>' + content + '</h1>\n'
-            dest.write(newLine)
-        elif line.startswith('## '): # heading level 2
-            content = line[3:len(line) - 1]
-            nested = 'h2'
-            newLine = '<h2>' + content + '</h2>\n'
-            dest.write(newLine)
-        elif line.startswith('### '): # heading level 3
-            content = line[4:len(line) - 1]
-            nested = 'h3'
-            newLine = '<h3>' + content + '</h3>\n'
-            dest.write(newLine)
-        elif line.startswith('#### '): # heading level 4
-            content = line[5:len(line) - 1]
-            nested = 'h4'
-            newLine = '<h4>' + content + '</h4>\n'
-            dest.write(newLine) 
-        elif line.startswith('##### '): # heading level 5
-            content = line[6:len(line) - 1]
-            nested = 'h5'
-            newLine = '<h5>' + content + '</h5>\n'
-            dest.write(newLine)   
-        elif line.startswith('###### '): # heading level 6
-            content = line[7:len(line) - 1]
-            nested = 'h6'
-            newLine = '<h6>' + content + '</h6>\n'
-            dest.write(newLine)   
-        elif line == '\n': # blank lines
-            continue
-        elif line.startswith('') and (line.endswith('  \n') or line.endswith('<br>\n')): # paragraph n line break
-            nested = 'p'
-            if nested is not None:
-                line.replace('  \n', '<br>\n')
-                newLine = '<p>' + line + '</p>\n'
-                dest.write(newLine)
-            
-
-        if verbosity:
-            print("Source: " + line)
-            print("Destination: " + newLine)
-
-        prevLine = line
+        
+        
         
 
     dest.write('</body>\n</html>')
