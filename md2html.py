@@ -23,6 +23,7 @@ Options:
 
 """
 from docopt import docopt
+import markdown
 import os
 from os import path
 import re
@@ -30,27 +31,22 @@ import sys
 
 verbose = True
 
-"""
-TODO:
-1. Ship a working implementation
-2. Implement alt. syntax for h1/h2
-"""
-
 def convert(source, dest, args, verbosity):
     dest = open(args['--dest'], 'w')
     prevLine = ''
-    nested = ''
+
+    source = open(args['--src'], "r", encoding="utf-8")
 
     # write HTML header markup
     dest.write('<!DOCTYPE html>\n<html>\n<head>\n<title>Converted with Md2Html</title>\n</head>\n<body>\n')
 
-    for line in source:
-        newLine = ''
-        
-        
-        
+    sourceTxt = source.read()
+    destTxt = markdown.markdown(sourceTxt)
+    dest.write(destTxt)
+    dest.write('\n</body>\n</html>')
+    dest.close()
 
-    dest.write('</body>\n</html>')
+    print("Conversion Complete")
 
 
 def create_files(args, verbosity):
